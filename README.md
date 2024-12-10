@@ -52,7 +52,7 @@ node bot.js
 - `/commands` to list available commands.
 - `/players` to list the players.
 - `/gifts` to list mystery gifts.
-- `/info` to display bot information.
+- `/about` to display bot information.
 - Log actions in a dedicated channel.
 
 ## 🧐 Troubleshooting
