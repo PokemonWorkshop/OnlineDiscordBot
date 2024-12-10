@@ -30,6 +30,7 @@ BOT_VERSION=1.0
 ```
 
 Replace `<your-bot-token>`, `<your-bot-client-id>`, and `<your-bearer-token>` with your actual values.
+The token & client id are from the [Discord Developer Portal](https://discord.com/developers/applications), and the bearer token is provided by the [Online Server](https://github.com/PokemonWorkshop/OnlineServer).
 
 ### 3. Install dependencies
 Run the following command to install all required dependencies:
