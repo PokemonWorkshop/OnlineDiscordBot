@@ -10,7 +10,6 @@ module.exports = {
 /**
  * Handles the 'interactionCreate' event for executing commands.
  * Responds to various slash commands by sending appropriate embed messages.
- * 
  * @param {object} interaction - The interaction object from Discord.js, used to determine the command and respond.
  * @param {object} client - The Discord client object.
  */
