@@ -58,12 +58,19 @@ node bot.js
 
 ## 🧐 Troubleshooting
 If you encounter any issues during setup or usage, consider the following:
-
 - **Dependencies**: Ensure all dependencies are installed correctly. Run `npm install` again if needed.
 - **Node.js version**: Make sure you're using a compatible version of Node.js (16.9.0+).
 - **Bot token**: Verify your token and other credentials in the `.env` file.
 - **Bot settings**: Verify your settings in `settings.js` file.
 - **Logs**: Check the console to see if the message is relevant to your error.
+
+## 🌐 Hosting
+To host your Discord bot, you can choose between local hosting or a remote server. For local hosting, ensure you have Node.js installed and run your bot using node bot.js or a similar command in your terminal. 
+However, for a more reliable solution, consider hosting on a VPS (like those provided by OVH, DigitalOcean, or AWS). 
+Install the necessary dependencies, upload your bot files, and use a process manager like PM2 or a tool like screen to keep your bot running persistently. 
+Additionally, ensure your hosting environment is secure by setting up a firewall and keeping your token and sensitive data private.
+
+You may want to check the [Online Server](https://github.com/PokemonWorkshop/OnlineServer) README file for more informations about hosting.
 
 ## 📜 License
 This project is licensed under the [MIT License](LICENSE).
