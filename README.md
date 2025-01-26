@@ -15,7 +15,7 @@ Follow these steps to set up and run the bot:
 ### 1. Clone the repository
 Clone this repository to your local machine:
 ```bash
-git clone https://github.com/yourusername/OnlineDiscordBot.git
+git clone https://github.com/PokemonWorkshop/OnlineDiscordBot.git
 cd OnlineDiscordBot
 ```
 
