@@ -8,7 +8,32 @@ const commands = [
     new SlashCommandBuilder().setName('commands').setDescription('Displays the list of the bot commands.'),
     new SlashCommandBuilder().setName('players').setDescription('Displays the list of players.'),
     new SlashCommandBuilder().setName('gifts').setDescription('Displays the list of mystery gifts.'),
-    new SlashCommandBuilder().setName('about').setDescription('Displays informations about the bot.')
+    new SlashCommandBuilder().setName('about').setDescription('Displays information\' about the bot.'),
+
+    new SlashCommandBuilder()
+        .setName('pokemon')
+        .setDescription('Display Pokémon information.')
+        .setDescriptionLocalizations({
+            French: 'Affiche les informations sur un Pokémon.',
+            SpanishES: 'Muestra la información de un Pokémon.',
+        })
+        .addStringOption(option =>
+            option
+                .setName('name')
+                .setDescription('Nom du Pokémon')
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+                .setName('langue')
+                .setDescription('Langue des informations')
+                .setRequired(false)
+                .addChoices(
+                    { name: 'Français', value: 'fr' },
+                    { name: 'Anglais', value: 'en' },
+                    { name: 'Espagnol', value: 'es' },
+                )
+        ),
 ]
 commands.map(command => command.toJSON());
 
