@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('discord.js');
 const { logInteraction } = require('../tools/log');
 const { showABout } = require('../commands/showAbout');
 const { commandsList } = require('../commands/commandsList');
@@ -15,18 +14,18 @@ module.exports = {
  */
     async execute(interaction, client) {
         if (interaction.isCommand()) {
+            let embed = null;
             try {
                 if (interaction.commandName === 'about') {
-                    const embed = await showABout(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await showABout(interaction, client);
                 } else if (interaction.commandName === 'commands') {
-                    const embed = await commandsList(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await commandsList(interaction, client);
                 } else if (interaction.commandName === 'gifts') {
-                    const embed = await mysteryGiftsList(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await mysteryGiftsList(interaction, client);
                 } else if (interaction.commandName === 'players') {
-                    const embed = await playersList(interaction, client);
+                    embed = await playersList(interaction, client);
+                }
+                if (embed){
                     await interaction.reply({ embeds: [embed] });
                 }
             } catch (error) {

@@ -5,13 +5,59 @@ const token = process.env.TOKEN;
 const rest = new REST({ version: '10' }).setToken(token);
 
 const commands = [
-    new SlashCommandBuilder().setName('commands').setDescription('Displays the list of the bot commands.'),
-    new SlashCommandBuilder().setName('players').setDescription('Displays the list of players.'),
-    new SlashCommandBuilder().setName('gifts').setDescription('Displays the list of mystery gifts.'),
-    new SlashCommandBuilder().setName('about').setDescription('Displays information\' about the bot.'),
+    new SlashCommandBuilder().setName('commands')
+        .setNameLocalizations({
+            French: 'commandes',
+            SpanishES: 'comandos',
+        })
+        .setDescription('Displays the list of the application commands.')
+        .setDescriptionLocalizations({
+            French: 'Affiche la liste des commandes de l\'application.',
+            SpanishES: 'Muestra la lista de comandos de la aplicación.'
+        }),
+
+    new SlashCommandBuilder()
+        .setName('players')
+        .setNameLocalizations({
+            French: 'joueurs',
+            SpanishES: 'jugadores',
+        })
+        .setDescription('Displays the list of players.')
+        .setDescriptionLocalizations({
+            French: 'Affiche la liste des joueurs.',
+            SpanishES: 'Muestra la lista de jugadores.',
+        }),
+
+    new SlashCommandBuilder()
+        .setName('gifts')
+        .setNameLocalizations({
+            French: 'cadeaux',
+            SpanishES: 'regalos',
+        })
+        .setDescription('Displays the list of mystery gifts.')
+        .setDescriptionLocalizations({
+            French: 'Affiche la liste des cadeaux mystères.',
+            SpanishES: 'Muestra la lista de regalos misteriosos.',
+        }),
+
+    new SlashCommandBuilder()
+        .setName('about')
+        .setNameLocalizations({
+            French: 'apropos',
+            SpanishES: 'acerca',
+        })
+        .setDescription('Displays information about the bot.')
+        .setDescriptionLocalizations({
+            French: 'Affiche des informations sur le bot.',
+            SpanishES: 'Muestra información sobre el bot.',
+        }),
 
     new SlashCommandBuilder()
         .setName('pokemon')
+        .setNameLocalizations({
+            French: 'pokemon',
+            SpanishES: 'pokemon',
+        })
         .setDescription('Display Pokémon information.')
         .setDescriptionLocalizations({
             French: 'Affiche les informations sur un Pokémon.',
@@ -20,21 +66,29 @@ const commands = [
         .addStringOption(option =>
             option
                 .setName('name')
-                .setDescription('Nom du Pokémon')
+                .setDescription('Pokémon name')
+                .setDescriptionLocalizations({
+                    French: 'Nom du Pokémon',
+                    SpanishES: 'Nombre del Pokémon',
+                })
                 .setRequired(true)
         )
         .addStringOption(option =>
             option
                 .setName('langue')
-                .setDescription('Langue des informations')
+                .setDescription('Language of the information')
+                .setDescriptionLocalizations({
+                    French: 'Langue des informations',
+                    SpanishES: 'Idioma de la información',
+                })
                 .setRequired(false)
                 .addChoices(
                     { name: 'Français', value: 'fr' },
                     { name: 'Anglais', value: 'en' },
-                    { name: 'Espagnol', value: 'es' },
+                    { name: 'Español', value: 'es' },
                 )
         ),
-]
+];
 commands.map(command => command.toJSON());
 
 /**
