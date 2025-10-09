@@ -3,6 +3,7 @@ const { showABout } = require('../commands/showAbout');
 const { commandsList } = require('../commands/commandsList');
 const { mysteryGiftsList } = require('../commands/mysteryGiftsList');
 const { playersList } = require('../commands/playersList');
+const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
 
 module.exports = {
     name: 'interactionCreate',
@@ -24,6 +25,8 @@ module.exports = {
                     embed = await mysteryGiftsList(interaction, client);
                 } else if (interaction.commandName === 'players') {
                     embed = await playersList(interaction, client);
+                } else if (interaction.commandName === 'pokemon') {
+                    embed = await pokemonInfo(interaction, client);
                 }
                 if (embed){
                     await interaction.reply({ embeds: [embed] });

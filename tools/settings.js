@@ -1,9 +1,12 @@
 const { GatewayIntentBits } = require('discord.js');
+const stream = require("node:stream");
 
 // Bot name
 const botName = 'OnlineDiscordBot';
 // URL of the online server API
-const baseUrlApi = 'https://online-address/api';
+const baseUrlOnlineServerAPI = 'https://online-address/api';
+// Url of the data API
+const baseUrlDataApi = process.env.BASE_URL_DATA_API;
 // URL of the icon to display in the footer of the messages
 const urlFooterIcon = 'https://pokemonworkshop.com/media/assets/assets/2915011424-1665083029/logo-50x50.webp';
 
@@ -19,4 +22,4 @@ const intents = [
     GatewayIntentBits.GuildMessages
 ];
 
-module.exports = { botName, baseUrlApi, urlFooterIcon, embedColor, errorEmbedColor, logsChannelName, intents };
+module.exports = { botName, baseUrlOnlineServerAPI, baseUrlDataApi, urlFooterIcon, embedColor, errorEmbedColor, logsChannelName, intents };

@@ -2,7 +2,7 @@ const axios = require('axios');
 const { EmbedBuilder } = require('discord.js');
 const { formatDate } = require('../tools/date');
 const { logInteraction } = require('../tools/log');
-const { botName, urlFooterIcon, embedColor, errorEmbedColor, baseUrlApi } = require('../tools/settings');
+const { botName, urlFooterIcon, embedColor, errorEmbedColor, baseUrlOnlineServerAPI } = require('../tools/settings');
 
 /**
  * Fetches and displays a list of mystery gifts in Discord as an embed message.
@@ -13,7 +13,7 @@ async function mysteryGiftsList(interaction, client) {
     logInteraction('Mystery gifts command', interaction, client, true);
 
     try {
-        const response = await axios.get(`${baseUrlApi}/gift/all`, {
+        const response = await axios.get(`${baseUrlOnlineServerAPI}/gift/all`, {
             headers: {
                 'Authorization': `Bearer ${process.env.BEARER}`
             }
@@ -35,29 +35,25 @@ async function mysteryGiftsList(interaction, client) {
 
             }).join('\n\n');
 
-            const embed = new EmbedBuilder()
+            return new EmbedBuilder()
                 .setColor(embedColor)
                 .setTitle('List of mystery gifts')
                 .setDescription(giftList || 'No mystery gift available for now.')
-                .setFooter({ 
-                    text: botName, 
+                .setFooter({
+                    text: botName,
                     iconURL: urlFooterIcon
                 })
                 .setTimestamp();
-
-            return embed;
         } else {
             throw new Error('API response indicates failure');
         }
     } catch (error) {
         console.error('Error while fetching gifts :', error);
 
-        const errorEmbed = new EmbedBuilder()
+        return new EmbedBuilder()
             .setColor(errorEmbedColor)
             .setTitle('Error')
             .setDescription('Unable to retrieve the list of mystery gifts. Please try again later.');
-
-        return errorEmbed;
     }
 }  
 

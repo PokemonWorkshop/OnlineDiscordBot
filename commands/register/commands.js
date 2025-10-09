@@ -1,8 +1,9 @@
-const { REST, Routes, SlashCommandBuilder } = require('discord.js');
-const { logInteraction } = require('../../tools/log');
+const {REST, Routes, SlashCommandBuilder} = require('discord.js');
+const {logInteraction} = require('../../tools/log');
+const {baseUrlOnlineServerAPI, baseUrlDataApi} = require('../../tools/settings');
 
 const token = process.env.TOKEN;
-const rest = new REST({ version: '10' }).setToken(token);
+const rest = new REST({version: '10'}).setToken(token);
 
 const commands = [
     new SlashCommandBuilder().setName('commands')
@@ -16,6 +17,20 @@ const commands = [
             SpanishES: 'Muestra la lista de comandos de la aplicación.'
         }),
 
+    new SlashCommandBuilder()
+        .setName('about')
+        .setNameLocalizations({
+            French: 'info',
+            SpanishES: 'info',
+        })
+        .setDescription('Displays information about the bot.')
+        .setDescriptionLocalizations({
+            French: 'Affiche des informations sur le bot.',
+            SpanishES: 'Muestra información sobre el bot.',
+        }),
+];
+
+const onlineServerApiCommands = [
     new SlashCommandBuilder()
         .setName('players')
         .setNameLocalizations({
@@ -39,19 +54,9 @@ const commands = [
             French: 'Affiche la liste des cadeaux mystères.',
             SpanishES: 'Muestra la lista de regalos misteriosos.',
         }),
+]
 
-    new SlashCommandBuilder()
-        .setName('about')
-        .setNameLocalizations({
-            French: 'apropos',
-            SpanishES: 'acerca',
-        })
-        .setDescription('Displays information about the bot.')
-        .setDescriptionLocalizations({
-            French: 'Affiche des informations sur le bot.',
-            SpanishES: 'Muestra información sobre el bot.',
-        }),
-
+const dataApiCommands = [
     new SlashCommandBuilder()
         .setName('pokemon')
         .setNameLocalizations({
@@ -75,7 +80,7 @@ const commands = [
         )
         .addStringOption(option =>
             option
-                .setName('langue')
+                .setName('lang')
                 .setDescription('Language of the information')
                 .setDescriptionLocalizations({
                     French: 'Langue des informations',
@@ -83,12 +88,24 @@ const commands = [
                 })
                 .setRequired(false)
                 .addChoices(
-                    { name: 'Français', value: 'fr' },
-                    { name: 'Anglais', value: 'en' },
-                    { name: 'Español', value: 'es' },
+                    {name: 'Français', value: 'fr'},
+                    {name: 'Anglais', value: 'en'},
+                    {name: 'Español', value: 'es'},
                 )
         ),
 ];
+
+if (baseUrlOnlineServerAPI) {
+    for (const command of onlineServerApiCommands) {
+        commands.push(command)
+    }
+}
+if (baseUrlDataApi) {
+    for (const command of dataApiCommands) {
+        commands.push(command)
+    }
+}
+
 commands.map(command => command.toJSON());
 
 /**
@@ -100,7 +117,7 @@ async function registerCommands(clientId) {
         logInteraction('Registering Slash commands...');
         await rest.put(
             Routes.applicationCommands(clientId),
-            { body: commands }
+            {body: commands}
         );
         logInteraction('Slash commands done.');
     } catch (error) {
@@ -150,4 +167,4 @@ async function getCommandIdByName(commandName) {
     }
 }
 
-module.exports = { commands, registerCommands, getCommandIdByName, deleteCommands };
+module.exports = {commands, registerCommands, getCommandIdByName, deleteCommands};
