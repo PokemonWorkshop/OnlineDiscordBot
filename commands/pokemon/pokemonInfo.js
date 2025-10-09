@@ -1,6 +1,6 @@
 const {
     MessageFlags, TextDisplayBuilder, ContainerBuilder, SectionBuilder,
-    ThumbnailBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder
+    ThumbnailBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, Colors
 } = require('discord.js');
 const axios = require('axios');
 const { baseUrlDataApi } = require('../../tools/settings');
@@ -15,8 +15,10 @@ async function pokemonInfo(interaction) {
         const pokemonData = response.data;
         const mainForm = pokemonData.main_form;
 
-        const container = new ContainerBuilder();
+        const hexColor = mainForm.type1.color.slice(1);
+        const decimalColor = parseInt(hexColor, 16);
 
+        const container = new ContainerBuilder().setAccentColor(decimalColor);
         // Section principale avec nom, numéro, image
         const section = new SectionBuilder()
             .addTextDisplayComponents(
