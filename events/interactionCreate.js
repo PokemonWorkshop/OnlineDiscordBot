@@ -4,6 +4,7 @@ const { commandsList } = require('../commands/commandsList');
 const { mysteryGiftsList } = require('../commands/mysteryGiftsList');
 const { playersList } = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags } = require('discord.js');
 
 module.exports = {
     name: 'interactionCreate',
@@ -26,12 +27,13 @@ module.exports = {
                 } else if (interaction.commandName === 'players') {
                     embed = await playersList(interaction, client);
                 } else if (interaction.commandName === 'pokemon') {
-                    embed = await pokemonInfo(interaction, client);
+                    await pokemonInfo(interaction, client);
                 }
-                if (embed){
-                    await interaction.reply({ embeds: [embed] });
+                if (embed) {
+                    await interaction.reply({embeds: [embed]});
                 }
             } catch (error) {
+                console.error('Error while running command :', error);
                 logInteraction(`Error while running ${interaction.commandName} : `, error);
                 await interaction.reply("Désolé, une erreur s'est produite lors de l'exécution de la commande.");
             }
