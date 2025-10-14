@@ -1,74 +1,185 @@
 const {
-    MessageFlags, TextDisplayBuilder, ContainerBuilder, SectionBuilder,
-    ThumbnailBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, Colors
+    MessageFlags,
+    TextDisplayBuilder,
+    ContainerBuilder,
+    SectionBuilder,
+    ThumbnailBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    SeparatorBuilder,
+    Colors
 } = require('discord.js');
 const axios = require('axios');
-const {baseUrlDataApi} = require('../../tools/settings');
+const { baseUrlDataApi } = require('../../tools/settings');
 
+/**
+ * Format a Pokémon name (capitalize first letter).
+ * @param {string} str
+ * @returns {string}
+ */
+function formatName(str) {
+    if (!str) return 'Unknown';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+/**
+ * Convert hex color to Discord decimal color safely.
+ * @param {string} hex
+ * @returns {number}
+ */
+function hexToDecimalColor(hex) {
+    if (!hex || !/^#[0-9A-Fa-f]{6}$/.test(hex)) return Colors.Blurple;
+    return parseInt(hex.slice(1), 16);
+}
+
+/**
+ * Simple localization system for text labels.
+ * @param {'en' | 'fr' | 'es'} lang
+ * @returns {Record<string, string>}
+ */
+function getLocale(lang) {
+    const locales = {
+        en: {
+            height: 'Height',
+            weight: 'Weight',
+            baseStats: 'Base Stats',
+            types: 'Type',
+            notFound: name => `⚠️ Pokémon "${name}" not found.`,
+            error: '❌ Unable to retrieve Pokémon information.',
+            missingName: '⚠️ You must specify a Pokémon name.'
+        },
+        fr: {
+            height: 'Taille',
+            weight: 'Poids',
+            baseStats: 'Statistiques de base',
+            types: 'Type',
+            notFound: name => `⚠️ Le Pokémon "${name}" est introuvable.`,
+            error: '❌ Impossible de récupérer les informations du Pokémon.',
+            missingName: '⚠️ Vous devez spécifier un nom de Pokémon.'
+        },
+        es: {
+            height: 'Altura',
+            weight: 'Peso',
+            baseStats: 'Estadísticas base',
+            types: 'Tipo',
+            notFound: name => `⚠️ El Pokémon "${name}" no se ha encontrado.`,
+            error: '❌ No se pudieron obtener los datos del Pokémon.',
+            missingName: '⚠️ Debes especificar un nombre de Pokémon.'
+        }
+    };
+    return locales[lang] || locales.en;
+}
+
+/**
+ * Fetches and displays Pokémon information.
+ * @param {import('discord.js').ChatInputCommandInteraction} interaction
+ */
 async function pokemonInfo(interaction) {
-    const name = interaction.options.getString('name').toLowerCase();
+    const name = interaction.options.getString('name')?.toLowerCase();
     const lang = interaction.options.getString('lang') || 'en';
+    const t = getLocale(lang);
+
+    if (!name) {
+        return interaction.reply({ content: t.missingName, ephemeral: true });
+    }
+
+    await interaction.deferReply();
 
     try {
-        const response = await axios.get(`${baseUrlDataApi}/pokemon/${name}`);
-
-        const pokemonData = response.data;
+        const { data: pokemonData } = await axios.get(`${baseUrlDataApi}/pokemon/${name}`);
         const mainForm = pokemonData.main_form;
 
-        const hexColor = mainForm.type1.color.slice(1);
-        const decimalColor = parseInt(hexColor, 16);
+        // Si aucune forme principale, on considère que le Pokémon n’existe pas
+        if (!mainForm) {
+            return interaction.editReply({
+                content: t.notFound(name),
+            });
+        }
 
-        const container = new ContainerBuilder().setAccentColor(decimalColor);
-        // Section principale avec nom, numéro, image
-        const section = new SectionBuilder()
+        const color = hexToDecimalColor(mainForm.type1?.color);
+        const displayName = formatName(pokemonData.symbol);
+        const number = pokemonData.number || '???';
+        const thumbnailUrl =
+            mainForm.sprite ||
+            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.number}.png`;
+
+        // === Container setup ===
+        const container = new ContainerBuilder().setAccentColor(color);
+
+        // === Header Section ===
+        const headerSection = new SectionBuilder()
             .addTextDisplayComponents(
-                new TextDisplayBuilder({content: `# ${pokemonData.symbol.charAt(0).toUpperCase() + pokemonData.symbol.slice(1)}`}),
-                new TextDisplayBuilder({content: `Numéro **${pokemonData.number}**`}),
-                new TextDisplayBuilder({content: `Taille: **${mainForm.height}m**, Poids: **${mainForm.weight}kg**`})
+                new TextDisplayBuilder({ content: `# **${displayName}**` }),
+                new TextDisplayBuilder({ content: `No. **${number}**` }),
+                new TextDisplayBuilder({
+                    content: `${t.height}: **${mainForm.height ?? '?'} m** | ${t.weight}: **${mainForm.weight ?? '?'} kg**`
+                })
             )
-            .setThumbnailAccessory(
-                new ThumbnailBuilder({media: {url: `https://www.pokemonforeteternelle.com/wp-content/uploads/2020/04/725.png`}})
-            );
+            .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: thumbnailUrl } }));
 
-        container.addSectionComponents(section);
+        container.addSectionComponents(headerSection);
+        container.addSeparatorComponents(new SeparatorBuilder());
+
+        // === Stats ===
+        const statsLines = [
+            `HP: **${mainForm.baseHp ?? '?'}**`,
+            `ATK: **${mainForm.baseAtk ?? '?'}**`,
+            `DEF: **${mainForm.baseDfe ?? '?'}**`,
+            `SPD: **${mainForm.baseSpd ?? '?'}**`,
+            `ATS: **${mainForm.baseAts ?? '?'}**`,
+            `DFS: **${mainForm.baseDfs ?? '?'}**`
+        ];
 
         container.addTextDisplayComponents(
-            new TextDisplayBuilder({content: `**Stats de base:**`}),
-            new TextDisplayBuilder({content: `HP: ${mainForm.baseHp}, ATK: ${mainForm.baseAtk}, DEF: ${mainForm.baseDfe}`}),
-            new TextDisplayBuilder({content: `SPD: ${mainForm.baseSpd}, ATS: ${mainForm.baseAts}, DFS: ${mainForm.baseDfs}`})
+            new TextDisplayBuilder({ content: `**${t.baseStats}:**\n${statsLines.join(' | ')}` })
         );
 
-        // Types en boutons
-        const actionRow = new ActionRowBuilder()
-            .addComponents(
+        // === Types ===
+        const typeRow = new ActionRowBuilder();
+
+        if (mainForm.type1) {
+            typeRow.addComponents(
                 new ButtonBuilder()
-                    .setLabel(mainForm.type1.symbol.charAt(0).toUpperCase() + mainForm.type1.symbol.slice(1))
+                    .setLabel(formatName(mainForm.type1.symbol))
                     .setStyle(ButtonStyle.Secondary)
                     .setCustomId(`type_${mainForm.type1.symbol}`)
             );
+        }
 
         if (mainForm.type2) {
-            actionRow.addComponents(
+            typeRow.addComponents(
                 new ButtonBuilder()
-                    .setLabel(mainForm.type2.symbol.charAt(0).toUpperCase() + mainForm.type2.symbol.slice(1))
+                    .setLabel(formatName(mainForm.type2.symbol))
                     .setStyle(ButtonStyle.Secondary)
                     .setCustomId(`type_${mainForm.type2.symbol}`)
             );
         }
 
-        container.addActionRowComponents(actionRow);
-
         container.addSeparatorComponents(new SeparatorBuilder());
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `**${t.types}${mainForm.type2 ? 's' : ''}:**`
+            })
+        );
+        container.addActionRowComponents(typeRow);
 
-        await interaction.reply({
+        await interaction.editReply({
             flags: MessageFlags.IsComponentsV2,
             components: [container],
         });
 
     } catch (error) {
-        console.error('Erreur récupération Pokémon:', error);
-        await interaction.reply({content: 'Impossible de récupérer les informations du Pokémon.', ephemeral: true});
+        console.error('❌ Error fetching Pokémon data:', error.message);
+
+        let message = t.error;
+        if (error.response?.status === 404) {
+            message = t.notFound(name);
+        }
+
+        await interaction.editReply({ content: message });
     }
+
 }
 
-module.exports = {pokemonInfo};
+module.exports = { pokemonInfo };
