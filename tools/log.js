@@ -1,5 +1,5 @@
-const { EmbedBuilder } = require('discord.js');
-const { embedColor, logsChannelName, botName, urlFooterIcon } = require('../tools/settings');
+const {EmbedBuilder} = require('discord.js');
+const {embedColor, logsChannelName, botName, urlFooterIcon} = require('../tools/settings');
 
 /**
  * Logs an interaction with the bot in the console and in a channel of the bot named "📰-logs" (set in the settings file).
@@ -46,8 +46,8 @@ async function logInteraction(message, interaction = null, client = null, warn =
             .setColor(embedColor)
             .setTitle(`📜 ${botName} Log`) // Added an emoji for visibility
             .addFields(
-                { name: '📄 Message', value: message, inline: false },
-                { name: '🔍 Détails', value: userInfoMessage, inline: false }
+                {name: '📄 Message', value: message, inline: false},
+                {name: '🔍 Détails', value: userInfoMessage, inline: false}
             )
             .setFooter({
                 text: `${botName} Logs`,
@@ -61,7 +61,7 @@ async function logInteraction(message, interaction = null, client = null, warn =
 
         if (logChannel) {
             try {
-                await logChannel.send({ embeds: [embed] });
+                await logChannel.send({embeds: [embed]});
             } catch (error) {
                 console.error(`Failed to send log message to channel '${logsChannelName}'. Error:`, error);
             }
@@ -71,4 +71,4 @@ async function logInteraction(message, interaction = null, client = null, warn =
     }
 }
 
-module.exports = { logInteraction };
+module.exports = {logInteraction};

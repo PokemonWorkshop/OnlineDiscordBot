@@ -1,8 +1,8 @@
 const axios = require('axios');
-const { EmbedBuilder } = require('discord.js');
-const { formatDate } = require('../tools/date');
-const { logInteraction } = require('../tools/log');
-const { botName, urlFooterIcon, embedColor, errorEmbedColor, baseUrlOnlineServerAPI } = require('../tools/settings');
+const {EmbedBuilder} = require('discord.js');
+const {formatDate} = require('../tools/date');
+const {logInteraction} = require('../tools/log');
+const {botName, urlFooterIcon, embedColor, errorEmbedColor, baseUrlOnlineServerAPI} = require('../tools/settings');
 
 /**
  * Fetches and displays a list of mystery gifts in Discord as an embed message.
@@ -13,25 +13,25 @@ async function mysteryGiftsList(interaction, client) {
     logInteraction('Mystery gifts command', interaction, client, true);
 
     try {
-        const response = await axios.get(`${baseUrlOnlineServerAPI}/gift/all`, {
+        const response = await axios.get(`${baseUrlOnlineServerAPI}/gift`, {
             headers: {
-                'Authorization': `Bearer ${process.env.BEARER}`
+                authorization: process.env.BEARER
             }
         });
         if (response.data.success) {
-            const gifts = response.data.data;
+            const gifts = response.data.gifts;
 
             const giftList = gifts.map((gift) => {
                 const isActive = new Date() >= new Date(gift.availability.startDate) && new Date() <= new Date(gift.availability.endDate);
-            
+
                 const startDate = formatDate(gift.availability.startDate);
                 const endDate = formatDate(gift.availability.endDate);
                 const code = gift.redeemCode || '*retrievable in game*';
-            
-                return `**${gift.title}** \n` + 
-                       `${isActive ? '🟢 Available' : '🔴 Not available'}\n` +
-                       `➡️ **Code** : ${code}\n` +
-                       `📅 **From** : ${startDate} to ${endDate}`;
+
+                return `**${gift.title}** \n` +
+                    `${isActive ? '🟢 Available' : '🔴 Not available'}\n` +
+                    `➡️ **Code** : ${code}\n` +
+                    `📅 **From** : ${startDate} to ${endDate}`;
 
             }).join('\n\n');
 
@@ -55,6 +55,6 @@ async function mysteryGiftsList(interaction, client) {
             .setTitle('Error')
             .setDescription('Unable to retrieve the list of mystery gifts. Please try again later.');
     }
-}  
+}
 
-module.exports = { mysteryGiftsList };
+module.exports = {mysteryGiftsList};

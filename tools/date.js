@@ -13,4 +13,4 @@ function formatDate(dateString) {
     return `${month}/${day}/${year} ${hours}:${minutes}`;
 }
 
-module.exports = { formatDate };
+module.exports = {formatDate};

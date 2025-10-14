@@ -1,19 +1,19 @@
-const { logInteraction } = require('../tools/log');
-const { showABout } = require('../commands/showAbout');
-const { commandsList } = require('../commands/commandsList');
-const { mysteryGiftsList } = require('../commands/mysteryGiftsList');
-const { playersList } = require('../commands/playersList');
+const {logInteraction} = require('../tools/log');
+const {showABout} = require('../commands/showAbout');
+const {commandsList} = require('../commands/commandsList');
+const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
+const {playersList} = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags } = require('discord.js');
+const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
 
 module.exports = {
     name: 'interactionCreate',
-/**
- * Handles the 'interactionCreate' event for executing commands.
- * Responds to various slash commands by sending appropriate embed messages.
- * @param {object} interaction - The interaction object from Discord.js, used to determine the command and respond.
- * @param {object} client - The Discord client object.
- */
+    /**
+     * Handles the 'interactionCreate' event for executing commands.
+     * Responds to various slash commands by sending appropriate embed messages.
+     * @param {object} interaction - The interaction object from Discord.js, used to determine the command and respond.
+     * @param {object} client - The Discord client object.
+     */
     async execute(interaction, client) {
         if (interaction.isCommand()) {
             let embed = null;
@@ -37,6 +37,6 @@ module.exports = {
                 logInteraction(`Error while running ${interaction.commandName} : `, error);
                 await interaction.reply("Désolé, une erreur s'est produite lors de l'exécution de la commande.");
             }
-        } 
+        }
     }
 };

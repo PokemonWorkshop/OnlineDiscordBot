@@ -3,7 +3,7 @@ const {
     ThumbnailBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SeparatorBuilder, Colors
 } = require('discord.js');
 const axios = require('axios');
-const { baseUrlDataApi } = require('../../tools/settings');
+const {baseUrlDataApi} = require('../../tools/settings');
 
 async function pokemonInfo(interaction) {
     const name = interaction.options.getString('name').toLowerCase();
@@ -22,20 +22,20 @@ async function pokemonInfo(interaction) {
         // Section principale avec nom, numéro, image
         const section = new SectionBuilder()
             .addTextDisplayComponents(
-                new TextDisplayBuilder({ content: `# ${pokemonData.symbol.charAt(0).toUpperCase() + pokemonData.symbol.slice(1)}` }),
-                new TextDisplayBuilder({ content: `Numéro **${pokemonData.number}**` }),
-                new TextDisplayBuilder({ content: `Taille: **${mainForm.height}m**, Poids: **${mainForm.weight}kg**` })
+                new TextDisplayBuilder({content: `# ${pokemonData.symbol.charAt(0).toUpperCase() + pokemonData.symbol.slice(1)}`}),
+                new TextDisplayBuilder({content: `Numéro **${pokemonData.number}**`}),
+                new TextDisplayBuilder({content: `Taille: **${mainForm.height}m**, Poids: **${mainForm.weight}kg**`})
             )
             .setThumbnailAccessory(
-                new ThumbnailBuilder({ media: { url: `https://www.pokemonforeteternelle.com/wp-content/uploads/2020/04/725.png` } })
+                new ThumbnailBuilder({media: {url: `https://www.pokemonforeteternelle.com/wp-content/uploads/2020/04/725.png`}})
             );
 
         container.addSectionComponents(section);
 
         container.addTextDisplayComponents(
-            new TextDisplayBuilder({ content: `**Stats de base:**` }),
-            new TextDisplayBuilder({ content: `HP: ${mainForm.baseHp}, ATK: ${mainForm.baseAtk}, DEF: ${mainForm.baseDfe}` }),
-            new TextDisplayBuilder({ content: `SPD: ${mainForm.baseSpd}, ATS: ${mainForm.baseAts}, DFS: ${mainForm.baseDfs}` })
+            new TextDisplayBuilder({content: `**Stats de base:**`}),
+            new TextDisplayBuilder({content: `HP: ${mainForm.baseHp}, ATK: ${mainForm.baseAtk}, DEF: ${mainForm.baseDfe}`}),
+            new TextDisplayBuilder({content: `SPD: ${mainForm.baseSpd}, ATS: ${mainForm.baseAts}, DFS: ${mainForm.baseDfs}`})
         );
 
         // Types en boutons
@@ -67,8 +67,8 @@ async function pokemonInfo(interaction) {
 
     } catch (error) {
         console.error('Erreur récupération Pokémon:', error);
-        await interaction.reply({ content: 'Impossible de récupérer les informations du Pokémon.', ephemeral: true });
+        await interaction.reply({content: 'Impossible de récupérer les informations du Pokémon.', ephemeral: true});
     }
 }
 
-module.exports = { pokemonInfo };
+module.exports = {pokemonInfo};

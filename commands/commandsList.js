@@ -1,6 +1,6 @@
-const { EmbedBuilder } = require('discord.js');
-const { logInteraction } = require('../tools/log');
-const { botName, urlFooterIcon, embedColor } = require('../tools/settings');
+const {EmbedBuilder} = require('discord.js');
+const {logInteraction} = require('../tools/log');
+const {botName, urlFooterIcon, embedColor} = require('../tools/settings');
 
 /**
  * Displays a list of available commands in Discord as an embed message.
@@ -13,22 +13,22 @@ async function commandsList(interaction, client) {
 
     const commands = await interaction.client.application.commands.fetch();
     const embed = new EmbedBuilder()
-      .setColor(embedColor)
-      .setTitle('Available commands')
-      .setFooter({ 
-        text: botName, 
-        iconURL: urlFooterIcon 
-      })
-      .setTimestamp();
+        .setColor(embedColor)
+        .setTitle('Available commands')
+        .setFooter({
+            text: botName,
+            iconURL: urlFooterIcon
+        })
+        .setTimestamp();
 
     commands.forEach(command => {
-      embed.addFields({
-        name: `</${command.name}:${command.id}>`,
-        value: `${command.description}`,
-      });
+        embed.addFields({
+            name: `</${command.name}:${command.id}>`,
+            value: `${command.description}`,
+        });
     });
 
     return embed;
 }
 
-module.exports = { commandsList };
+module.exports = {commandsList};

@@ -1,14 +1,14 @@
 require('dotenv').config();
 
-const { Client } = require('discord.js');
+const {Client} = require('discord.js');
 
-const { intents } = require('./tools/settings'); 
-const { registerCommands } = require('./commands/register/commands');
+const {intents} = require('./tools/settings');
+const {registerCommands} = require('./commands/register/commands');
 
-const readyEvent = require('./events/ready'); 
+const readyEvent = require('./events/ready');
 const interactionCreateEvent = require('./events/interactionCreate');
 
-const client = new Client({ 
+const client = new Client({
     intents: intents
 });
 
