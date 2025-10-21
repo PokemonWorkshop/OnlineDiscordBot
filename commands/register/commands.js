@@ -53,7 +53,34 @@ const onlineServerApiCommands = [
         .setDescriptionLocalizations({
             French: 'Affiche la liste des cadeaux mystères.',
             SpanishES: 'Muestra la lista de regalos misteriosos.',
-        }),
+        })
+        .addStringOption(option =>
+            option
+                .setName('show_all')
+                .setNameLocalizations({
+                    French: 'expiré',
+                    SpanishES: 'todo',
+                })
+                .setDescription('Display all gifts, including expired ones')
+                .setDescriptionLocalizations({
+                    French: 'Afficher tous les cadeaux, même les périmés',
+                    SpanishES: 'Mostrar todos los regalos, incluso los caducados',
+                })
+                .addChoices(
+                    {
+                        name: 'Yes',
+                        nameLocalizations: { French: 'Oui', SpanishES: 'Sí' },
+                        value: 'yes',
+                    },
+                    {
+                        name: 'No',
+                        nameLocalizations: { French: 'Non', SpanishES: 'No' },
+                        value: 'no',
+                    }
+                )
+                .setRequired(false)
+),
+
 ]
 
 const dataApiCommands = [

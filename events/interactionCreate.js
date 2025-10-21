@@ -4,6 +4,7 @@ const {commandsList} = require('../commands/commandsList');
 const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
 const {playersList} = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
+const {handleGiftShow} = require("../interactions/giftShow");
 const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
 
 module.exports = {
@@ -15,28 +16,39 @@ module.exports = {
      * @param {object} client - The Discord client object.
      */
     async execute(interaction, client) {
-        if (interaction.isCommand()) {
-            let embed = null;
-            try {
+        try {
+            if (interaction.isCommand()) {
+                let embed = null;
                 if (interaction.commandName === 'about') {
                     embed = await showABout(interaction, client);
                 } else if (interaction.commandName === 'commands') {
                     embed = await commandsList(interaction, client);
                 } else if (interaction.commandName === 'gifts') {
-                    embed = await mysteryGiftsList(interaction, client);
+                    await mysteryGiftsList(interaction, client); // déjà gère la liste
                 } else if (interaction.commandName === 'players') {
                     embed = await playersList(interaction, client);
                 } else if (interaction.commandName === 'pokemon') {
                     await pokemonInfo(interaction, client);
                 }
-                if (embed) {
-                    await interaction.reply({embeds: [embed]});
+                if (embed) await interaction.reply({ embeds: [embed] });
+            }
+
+            else if (interaction.isButton()) {
+                if (interaction.customId.startsWith('gift_show_')) {
+                    await handleGiftShow(interaction);
                 }
-            } catch (error) {
-                console.error('Error while running command :', error);
-                logInteraction(`Error while running ${interaction.commandName} : `, error);
-                await interaction.reply("Désolé, une erreur s'est produite lors de l'exécution de la commande.");
+            }
+
+        } catch (error) {
+            console.error('Error while handling interaction:', error);
+            logInteraction('Error in interactionCreate:', error);
+            if (!interaction.replied) {
+                await interaction.reply({
+                    content: "Désolé, une erreur s'est produite lors de l'exécution de l'interaction.",
+                    flags: MessageFlags.ephemeral,
+                });
             }
         }
     }
+
 };

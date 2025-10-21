@@ -10,7 +10,7 @@ const {
     SeparatorBuilder,
     Colors
 } = require('discord.js');
-const axios = require('axios');
+const fetch = require('node-fetch');
 const { baseUrlDataApi } = require('../../tools/settings');
 
 /**
@@ -87,14 +87,18 @@ async function pokemonInfo(interaction) {
     await interaction.deferReply();
 
     try {
-        const { data: pokemonData } = await axios.get(`${baseUrlDataApi}/pokemon/${name}`);
+        const response = await fetch(`${baseUrlDataApi}/pokemon/${name}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                return interaction.editReply({ content: t.notFound(name) });
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const pokemonData = await response.json();
         const mainForm = pokemonData.main_form;
 
-        // Si aucune forme principale, on considère que le Pokémon n’existe pas
         if (!mainForm) {
-            return interaction.editReply({
-                content: t.notFound(name),
-            });
+            return interaction.editReply({ content: t.notFound(name) });
         }
 
         const color = hexToDecimalColor(mainForm.type1?.color);
@@ -104,10 +108,8 @@ async function pokemonInfo(interaction) {
             mainForm.sprite ||
             `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.number}.png`;
 
-        // === Container setup ===
         const container = new ContainerBuilder().setAccentColor(color);
 
-        // === Header Section ===
         const headerSection = new SectionBuilder()
             .addTextDisplayComponents(
                 new TextDisplayBuilder({ content: `# **${displayName}**` }),
@@ -121,21 +123,19 @@ async function pokemonInfo(interaction) {
         container.addSectionComponents(headerSection);
         container.addSeparatorComponents(new SeparatorBuilder());
 
-        // === Stats ===
         const statsLines = [
             `HP: **${mainForm.baseHp ?? '?'}**`,
             `ATK: **${mainForm.baseAtk ?? '?'}**`,
             `DEF: **${mainForm.baseDfe ?? '?'}**`,
-            `SPD: **${mainForm.baseSpd ?? '?'}**`,
             `ATS: **${mainForm.baseAts ?? '?'}**`,
-            `DFS: **${mainForm.baseDfs ?? '?'}**`
+            `DFS: **${mainForm.baseDfs ?? '?'}**`,
+            `SPD: **${mainForm.baseSpd ?? '?'}**`
         ];
 
         container.addTextDisplayComponents(
             new TextDisplayBuilder({ content: `**${t.baseStats}:**\n${statsLines.join(' | ')}` })
         );
 
-        // === Types ===
         const typeRow = new ActionRowBuilder();
 
         if (mainForm.type1) {
@@ -172,14 +172,9 @@ async function pokemonInfo(interaction) {
     } catch (error) {
         console.error('❌ Error fetching Pokémon data:', error.message);
 
-        let message = t.error;
-        if (error.response?.status === 404) {
-            message = t.notFound(name);
-        }
-
+        const message = t.error;
         await interaction.editReply({ content: message });
     }
-
 }
 
 module.exports = { pokemonInfo };
