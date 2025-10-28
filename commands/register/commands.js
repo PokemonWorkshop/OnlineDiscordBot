@@ -69,17 +69,17 @@ const onlineServerApiCommands = [
                 .addChoices(
                     {
                         name: 'Yes',
-                        nameLocalizations: { French: 'Oui', SpanishES: 'Sí' },
+                        nameLocalizations: {French: 'Oui', SpanishES: 'Sí'},
                         value: 'yes',
                     },
                     {
                         name: 'No',
-                        nameLocalizations: { French: 'Non', SpanishES: 'No' },
+                        nameLocalizations: {French: 'Non', SpanishES: 'No'},
                         value: 'no',
                     }
                 )
                 .setRequired(false)
-),
+        ),
 
 ]
 

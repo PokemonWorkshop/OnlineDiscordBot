@@ -11,7 +11,7 @@ const {
     Colors
 } = require('discord.js');
 const fetch = require('node-fetch');
-const { baseUrlDataApi } = require('../../tools/settings');
+const {baseUrlDataApi} = require('../../tools/settings');
 
 /**
  * Format a Pokémon name (capitalize first letter).
@@ -81,7 +81,7 @@ async function pokemonInfo(interaction) {
     const t = getLocale(lang);
 
     if (!name) {
-        return interaction.reply({ content: t.missingName, ephemeral: true });
+        return interaction.reply({content: t.missingName, ephemeral: true});
     }
 
     await interaction.deferReply();
@@ -90,7 +90,7 @@ async function pokemonInfo(interaction) {
         const response = await fetch(`${baseUrlDataApi}/pokemon/${name}`);
         if (!response.ok) {
             if (response.status === 404) {
-                return interaction.editReply({ content: t.notFound(name) });
+                return interaction.editReply({content: t.notFound(name)});
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -98,7 +98,7 @@ async function pokemonInfo(interaction) {
         const mainForm = pokemonData.main_form;
 
         if (!mainForm) {
-            return interaction.editReply({ content: t.notFound(name) });
+            return interaction.editReply({content: t.notFound(name)});
         }
 
         const color = hexToDecimalColor(mainForm.type1?.color);
@@ -112,13 +112,13 @@ async function pokemonInfo(interaction) {
 
         const headerSection = new SectionBuilder()
             .addTextDisplayComponents(
-                new TextDisplayBuilder({ content: `# **${displayName}**` }),
-                new TextDisplayBuilder({ content: `No. **${number}**` }),
+                new TextDisplayBuilder({content: `# **${displayName}**`}),
+                new TextDisplayBuilder({content: `No. **${number}**`}),
                 new TextDisplayBuilder({
                     content: `${t.height}: **${mainForm.height ?? '?'} m** | ${t.weight}: **${mainForm.weight ?? '?'} kg**`
                 })
             )
-            .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: thumbnailUrl } }));
+            .setThumbnailAccessory(new ThumbnailBuilder({media: {url: thumbnailUrl}}));
 
         container.addSectionComponents(headerSection);
         container.addSeparatorComponents(new SeparatorBuilder());
@@ -133,7 +133,7 @@ async function pokemonInfo(interaction) {
         ];
 
         container.addTextDisplayComponents(
-            new TextDisplayBuilder({ content: `**${t.baseStats}:**\n${statsLines.join(' | ')}` })
+            new TextDisplayBuilder({content: `**${t.baseStats}:**\n${statsLines.join(' | ')}`})
         );
 
         const typeRow = new ActionRowBuilder();
@@ -173,8 +173,8 @@ async function pokemonInfo(interaction) {
         console.error('❌ Error fetching Pokémon data:', error.message);
 
         const message = t.error;
-        await interaction.editReply({ content: message });
+        await interaction.editReply({content: message});
     }
 }
 
-module.exports = { pokemonInfo };
+module.exports = {pokemonInfo};

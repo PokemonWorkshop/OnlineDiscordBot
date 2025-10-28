@@ -2,9 +2,7 @@ const axios = require('axios');
 const {
     MessageFlags,
     ContainerBuilder,
-    SectionBuilder,
     TextDisplayBuilder,
-    SeparatorBuilder,
     Colors
 } = require('discord.js');
 const { formatDate } = require('../tools/date');
@@ -16,7 +14,6 @@ async function handleGiftShow(interaction) {
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
 
     try {
-        // Requête API pour récupérer le gift exact
         const response = await axios.get(`${baseUrlOnlineServerAPI}/gift/${giftId}`, {
             headers: { authorization: process.env.BEARER }
         });
