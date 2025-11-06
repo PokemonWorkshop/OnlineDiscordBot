@@ -5,6 +5,7 @@ const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
 const {playersList} = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
 const {handleGiftShow} = require("../interactions/giftShow");
+const {handleAbilityShow} = require("../interactions/abilityShow");
 const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
 
 module.exports = {
@@ -36,6 +37,8 @@ module.exports = {
             else if (interaction.isButton()) {
                 if (interaction.customId.startsWith('gift_show_')) {
                     await handleGiftShow(interaction);
+                } else if (interaction.customId.startsWith('ability_')) {
+                    await handleAbilityShow(interaction);
                 }
             }
 

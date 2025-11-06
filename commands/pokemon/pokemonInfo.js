@@ -147,7 +147,7 @@ async function pokemonInfo(interaction) {
             );
         }
 
-        if (mainForm.type2) {
+        if (mainForm.type2.symbol) {
             typeRow.addComponents(
                 new ButtonBuilder()
                     .setLabel(formatName(mainForm.type2.symbol))
@@ -163,6 +163,25 @@ async function pokemonInfo(interaction) {
             })
         );
         container.addActionRowComponents(typeRow);
+
+        if (mainForm.abilities !== [] ){
+            container.addSeparatorComponents(new SeparatorBuilder());
+            const abilitiesRows = new ActionRowBuilder();
+            mainForm.abilities.forEach(ability => {
+                abilitiesRows.addComponents(
+                    new ButtonBuilder()
+                        .setLabel(formatName(ability.symbol))
+                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId(`ability_${ability.symbol}`)
+                );
+            });
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `**Abilities:**`
+                })
+            );
+            container.addActionRowComponents(abilitiesRows);
+        }
 
         await interaction.editReply({
             flags: MessageFlags.IsComponentsV2,
