@@ -13,9 +13,10 @@ async function handleAbilityShow(interaction) {
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {
-        console.log(`${baseUrlDataApi}/abilities/${abilityId}`)
         const response = await fetch(`${baseUrlDataApi}/abilities/${abilityId}`, {
-            headers: { authorization: process.env.BEARER }
+            headers: { authorization: process.env.BEARER,
+                'Accept-Language': 'fr'
+            },
         });
         const ability = await response.json();
         if (!ability || !ability.symbol)
@@ -24,7 +25,8 @@ async function handleAbilityShow(interaction) {
         const container = new ContainerBuilder().setAccentColor(Colors.Blue);
 
         container.addTextDisplayComponents(
-            new TextDisplayBuilder({ content: `**${ability.symbol}**` }),
+            new TextDisplayBuilder({ content: `# **${ability.name}**` }),
+            new TextDisplayBuilder({ content: `${ability.description}` }),
         );
 
         await interaction.editReply({

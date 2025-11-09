@@ -20,7 +20,7 @@ const {baseUrlDataApi} = require('../../tools/settings');
  */
 function formatName(str) {
     if (!str) return 'Unknown';
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    return str;
 }
 
 /**
@@ -87,7 +87,11 @@ async function pokemonInfo(interaction) {
     await interaction.deferReply();
 
     try {
-        const response = await fetch(`${baseUrlDataApi}/pokemon/${name}`);
+        const response = await fetch(`${baseUrlDataApi}/pokemon/${name}`, {
+            headers: {
+                'Accept-Language': lang,
+            },
+        });
         if (!response.ok) {
             if (response.status === 404) {
                 return interaction.editReply({content: t.notFound(name)});
@@ -102,7 +106,6 @@ async function pokemonInfo(interaction) {
         }
 
         const color = hexToDecimalColor(mainForm.type1?.color);
-        const displayName = formatName(pokemonData.symbol);
         const number = pokemonData.number || '???';
         const thumbnailUrl =
             mainForm.sprite ||
@@ -112,8 +115,8 @@ async function pokemonInfo(interaction) {
 
         const headerSection = new SectionBuilder()
             .addTextDisplayComponents(
-                new TextDisplayBuilder({content: `# **${displayName}**`}),
-                new TextDisplayBuilder({content: `No. **${number}**`}),
+                new TextDisplayBuilder({content: `# **${formatName(mainForm.name)} - ${number}**`}),
+                new TextDisplayBuilder({content: `${mainForm.description}`}),
                 new TextDisplayBuilder({
                     content: `${t.height}: **${mainForm.height ?? '?'} m** | ${t.weight}: **${mainForm.weight ?? '?'} kg**`
                 })
@@ -141,7 +144,7 @@ async function pokemonInfo(interaction) {
         if (mainForm.type1) {
             typeRow.addComponents(
                 new ButtonBuilder()
-                    .setLabel(formatName(mainForm.type1.symbol))
+                    .setLabel(formatName(mainForm.type1.name))
                     .setStyle(ButtonStyle.Secondary)
                     .setCustomId(`type_${mainForm.type1.symbol}`)
             );
@@ -150,7 +153,7 @@ async function pokemonInfo(interaction) {
         if (mainForm.type2.symbol) {
             typeRow.addComponents(
                 new ButtonBuilder()
-                    .setLabel(formatName(mainForm.type2.symbol))
+                    .setLabel(formatName(mainForm.type2.name))
                     .setStyle(ButtonStyle.Secondary)
                     .setCustomId(`type_${mainForm.type2.symbol}`)
             );
@@ -170,7 +173,7 @@ async function pokemonInfo(interaction) {
             mainForm.abilities.forEach(ability => {
                 abilitiesRows.addComponents(
                     new ButtonBuilder()
-                        .setLabel(formatName(ability.symbol))
+                        .setLabel(formatName(ability.name))
                         .setStyle(ButtonStyle.Secondary)
                         .setCustomId(`ability_${ability.symbol}`)
                 );
