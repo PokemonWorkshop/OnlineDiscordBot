@@ -37,7 +37,7 @@ module.exports = {
             else if (interaction.isButton()) {
                 if (interaction.customId.startsWith('gift_show_')) {
                     await handleGiftShow(interaction);
-                } else if (interaction.customId.startsWith('ability_')) {
+                } else if (interaction.customId.startsWith('ability&')) {
                     await handleAbilityShow(interaction);
                 }
             }

@@ -9,15 +9,23 @@ const {logInteraction} = require('../tools/log');
 const {baseUrlDataApi} = require('../tools/settings');
 
 async function handleAbilityShow(interaction) {
-    const abilityId = interaction.customId.replace('ability_', '');
+    const parts = interaction.customId.split('&');
+    const abilityId = parts[1];
+    const lang = parts[2] || interaction.locale || 'en';
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {
         const response = await fetch(`${baseUrlDataApi}/abilities/${abilityId}`, {
             headers: { authorization: process.env.BEARER,
-                'Accept-Language': 'fr'
+                'Accept-Language': lang
             },
         });
+        console.log('Fetching ability from:', `${baseUrlDataApi}/abilities/${abilityId}`);
+
+        if (!response.ok) {
+            console.error('Failed to fetch ability, status:', response.status);
+            return interaction.editReply({ content: '⚠️ Impossible de récupérer cette capacité.' });
+        }
         const ability = await response.json();
         if (!ability || !ability.symbol)
             return interaction.editReply({ content: '⚠️ Impossible de récupérer cette capacité.' });

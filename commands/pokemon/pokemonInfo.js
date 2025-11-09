@@ -200,7 +200,7 @@ async function pokemonInfo(interaction) {
                     new ButtonBuilder()
                         .setLabel(formatName(ability.name))
                         .setStyle(ButtonStyle.Secondary)
-                        .setCustomId(`ability_${ability.symbol}`)
+                        .setCustomId(`ability&${ability.symbol}&${lang}`)
                 );
             });
             container.addTextDisplayComponents(
