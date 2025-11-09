@@ -20,12 +20,7 @@ async function handleAbilityShow(interaction) {
                 'Accept-Language': lang
             },
         });
-        console.log('Fetching ability from:', `${baseUrlDataApi}/abilities/${abilityId}`);
 
-        if (!response.ok) {
-            console.error('Failed to fetch ability, status:', response.status);
-            return interaction.editReply({ content: '⚠️ Impossible de récupérer cette capacité.' });
-        }
         const ability = await response.json();
         if (!ability || !ability.symbol)
             return interaction.editReply({ content: '⚠️ Impossible de récupérer cette capacité.' });
