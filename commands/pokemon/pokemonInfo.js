@@ -47,7 +47,15 @@ function getLocale(lang) {
             types: 'Type',
             notFound: name => `⚠️ Pokémon "${name}" not found.`,
             error: '❌ Unable to retrieve Pokémon information.',
-            missingName: '⚠️ You must specify a Pokémon name.'
+            missingName: '⚠️ You must specify a Pokémon name.',
+            stats: {
+                hp: 'HP',
+                atk: 'ATK',
+                def: 'DEF',
+                ats: 'ATS',
+                dfs: 'DFS',
+                spd: 'SPD'
+            }
         },
         fr: {
             height: 'Taille',
@@ -56,7 +64,15 @@ function getLocale(lang) {
             types: 'Type',
             notFound: name => `⚠️ Le Pokémon "${name}" est introuvable.`,
             error: '❌ Impossible de récupérer les informations du Pokémon.',
-            missingName: '⚠️ Vous devez spécifier un nom de Pokémon.'
+            missingName: '⚠️ Vous devez spécifier un nom de Pokémon.',
+            stats: {
+                hp: 'PV',
+                atk: 'ATQ',
+                def: 'DEF',
+                ats: 'ATS',
+                dfs: 'DFS',
+                spd: 'VIT'
+            }
         },
         es: {
             height: 'Altura',
@@ -65,11 +81,20 @@ function getLocale(lang) {
             types: 'Tipo',
             notFound: name => `⚠️ El Pokémon "${name}" no se ha encontrado.`,
             error: '❌ No se pudieron obtener los datos del Pokémon.',
-            missingName: '⚠️ Debes especificar un nombre de Pokémon.'
+            missingName: '⚠️ Debes especificar un nombre de Pokémon.',
+            stats: {
+                hp: 'PS',
+                atk: 'ATA',
+                def: 'DEF',
+                ats: 'ATAE',
+                dfs: 'DEFE',
+                spd: 'VEL'
+            }
         }
     };
     return locales[lang] || locales.en;
 }
+
 
 /**
  * Fetches and displays Pokémon information.
@@ -127,12 +152,12 @@ async function pokemonInfo(interaction) {
         container.addSeparatorComponents(new SeparatorBuilder());
 
         const statsLines = [
-            `HP: **${mainForm.baseHp ?? '?'}**`,
-            `ATK: **${mainForm.baseAtk ?? '?'}**`,
-            `DEF: **${mainForm.baseDfe ?? '?'}**`,
-            `ATS: **${mainForm.baseAts ?? '?'}**`,
-            `DFS: **${mainForm.baseDfs ?? '?'}**`,
-            `SPD: **${mainForm.baseSpd ?? '?'}**`
+            `${t.stats.hp}: **${mainForm.baseHp ?? '?'}**`,
+            `${t.stats.atk}: **${mainForm.baseAtk ?? '?'}**`,
+            `${t.stats.def}: **${mainForm.baseDfe ?? '?'}**`,
+            `${t.stats.ats}: **${mainForm.baseAts ?? '?'}**`,
+            `${t.stats.dfs}: **${mainForm.baseDfs ?? '?'}**`,
+            `${t.stats.spd}: **${mainForm.baseSpd ?? '?'}**`
         ];
 
         container.addTextDisplayComponents(
