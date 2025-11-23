@@ -45,6 +45,23 @@ function getLocale(lang) {
             weight: 'Weight',
             baseStats: 'Base Stats',
             types: 'Type',
+            abilities: 'Abilities',
+            experience: 'Experience',
+            encounter: 'Encounter',
+            breeding: 'Breeding',
+            evGiven: 'EV Given',
+            expCurve: 'Experience Curve',
+            baseExp: 'Base Experience',
+            baseLoyalty: 'Base Loyalty',
+            catchRate: 'Catch Rate',
+            genderRatio: 'Gender Ratio',
+            itemHeld: 'Item Held',
+            breedingGroups: 'Breeding Groups',
+            eggSteps: 'Egg Steps',
+            baby: 'Baby',
+            male: 'Male',
+            female: 'Female',
+            genderless: 'Genderless',
             notFound: name => `⚠️ Pokémon "${name}" not found.`,
             error: '❌ Unable to retrieve Pokémon information.',
             missingName: '⚠️ You must specify a Pokémon name.',
@@ -62,6 +79,23 @@ function getLocale(lang) {
             weight: 'Poids',
             baseStats: 'Statistiques de base',
             types: 'Type',
+            abilities: 'Capacités',
+            experience: 'Expérience',
+            encounter: 'Rencontre',
+            breeding: 'Reproduction',
+            evGiven: 'EV donnés',
+            expCurve: 'Courbe d\'expérience',
+            baseExp: 'Expérience de base',
+            baseLoyalty: 'Bonheur de base',
+            catchRate: 'Taux de capture',
+            genderRatio: 'Ratio de genre',
+            itemHeld: 'Objet tenu',
+            breedingGroups: 'Groupes d\'œufs',
+            eggSteps: 'Pas pour éclosion',
+            baby: 'Bébé',
+            male: 'Mâle',
+            female: 'Femelle',
+            genderless: 'Asexué',
             notFound: name => `⚠️ Le Pokémon "${name}" est introuvable.`,
             error: '❌ Impossible de récupérer les informations du Pokémon.',
             missingName: '⚠️ Vous devez spécifier un nom de Pokémon.',
@@ -79,6 +113,23 @@ function getLocale(lang) {
             weight: 'Peso',
             baseStats: 'Estadísticas base',
             types: 'Tipo',
+            abilities: 'Habilidades',
+            experience: 'Experiencia',
+            encounter: 'Encuentro',
+            breeding: 'Cría',
+            evGiven: 'EV otorgados',
+            expCurve: 'Curva de experiencia',
+            baseExp: 'Experiencia base',
+            baseLoyalty: 'Felicidad base',
+            catchRate: 'Tasa de captura',
+            genderRatio: 'Proporción de género',
+            itemHeld: 'Objeto equipado',
+            breedingGroups: 'Grupos de huevo',
+            eggSteps: 'Pasos para eclosión',
+            baby: 'Bebé',
+            male: 'Macho',
+            female: 'Hembra',
+            genderless: 'Sin género',
             notFound: name => `⚠️ El Pokémon "${name}" no se ha encontrado.`,
             error: '❌ No se pudieron obtener los datos del Pokémon.',
             missingName: '⚠️ Debes especificar un nombre de Pokémon.',
@@ -206,11 +257,67 @@ async function pokemonInfo(interaction) {
             });
             container.addTextDisplayComponents(
                 new TextDisplayBuilder({
-                    content: `**Abilities:**`
+                    content: `**${t.abilities}:**`
                 })
             );
             container.addActionRowComponents(abilitiesRows);
         }
+
+        // Experience Section
+        container.addSeparatorComponents(new SeparatorBuilder());
+        const evGivenParts = [];
+        if (mainForm.evHp > 0) evGivenParts.push(`${t.stats.hp}: ${mainForm.evHp}`);
+        if (mainForm.evAtk > 0) evGivenParts.push(`${t.stats.atk}: ${mainForm.evAtk}`);
+        if (mainForm.evDfe > 0) evGivenParts.push(`${t.stats.def}: ${mainForm.evDfe}`);
+        if (mainForm.evAts > 0) evGivenParts.push(`${t.stats.ats}: ${mainForm.evAts}`);
+        if (mainForm.evDfs > 0) evGivenParts.push(`${t.stats.dfs}: ${mainForm.evDfs}`);
+        if (mainForm.evSpd > 0) evGivenParts.push(`${t.stats.spd}: ${mainForm.evSpd}`);
+
+        const evGivenText = evGivenParts.length > 0 ? evGivenParts.join(', ') : '-';
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `**${t.experience}:**\n` +
+                    `${t.evGiven}: **${evGivenText}**\n` +
+                    `${t.expCurve}: **${mainForm.experienceType ?? '-'}**\n` +
+                    `${t.baseExp}: **${mainForm.baseExperience ?? '?'}** | ${t.baseLoyalty}: **${mainForm.baseLoyalty ?? '?'}**`
+            })
+        );
+
+        // Encounter Section
+        container.addSeparatorComponents(new SeparatorBuilder());
+        let genderRatioText = '';
+        if (mainForm.femaleRate === -1) {
+            genderRatioText = t.genderless;
+        } else {
+            const femalePercent = mainForm.femaleRate;
+            const malePercent = 100 - femalePercent;
+            genderRatioText = `♂ ${malePercent}% / ♀ ${femalePercent}%`;
+        }
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `**${t.encounter}:**\n` +
+                    `${t.catchRate}: **${mainForm.catchRate ?? '?'}**\n` +
+                    `${t.genderRatio}: **${genderRatioText}**\n` +
+                    `${t.itemHeld}: **-**`
+            })
+        );
+
+        // Breeding Section
+        container.addSeparatorComponents(new SeparatorBuilder());
+        const breedingGroupsText = mainForm.breedGroups && mainForm.breedGroups.length > 0
+            ? mainForm.breedGroups.filter((v, i, a) => a.indexOf(v) === i).join(', ')
+            : '-';
+
+        container.addTextDisplayComponents(
+            new TextDisplayBuilder({
+                content: `**${t.breeding}:**\n` +
+                    `${t.baby}: **${mainForm.babyDbSymbol ?? '-'}**\n` +
+                    `${t.breedingGroups}: **${breedingGroupsText}**\n` +
+                    `${t.eggSteps}: **${mainForm.hatchSteps ?? '?'}**`
+            })
+        );
 
         await interaction.editReply({
             flags: MessageFlags.IsComponentsV2,
