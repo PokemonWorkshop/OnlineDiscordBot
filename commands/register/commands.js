@@ -56,6 +56,37 @@ const onlineServerApiCommands = [
         })
         .addStringOption(option =>
             option
+            .setName('type')
+            .setNameLocalizations({
+                French: 'type',
+                SpanishES: 'tipo',
+            })
+            .setDescription('Type of gifts to display')
+            .setDescriptionLocalizations({
+                French: 'Type de cadeaux à afficher',
+                SpanishES: 'Tipo de regalos a mostrar',
+            })
+            .addChoices(
+                {
+                    name: 'All',
+                    nameLocalizations: {French: 'Tous', SpanishES: 'Todos'},
+                    value: 'all',
+                },
+                {
+                    name: 'Code',
+                    nameLocalizations: {French: 'Code', SpanishES: 'Código'},
+                    value: 'code',
+                },
+                {
+                    name: 'Internet',
+                    nameLocalizations: {French: 'Internet', SpanishES: 'Internet'},
+                    value: 'internet',
+                }
+            )
+            .setRequired(false)
+        )
+        .addStringOption(option =>
+            option
                 .setName('show_all')
                 .setNameLocalizations({
                     French: 'expiré',

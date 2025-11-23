@@ -35,6 +35,13 @@ async function mysteryGiftsList(interaction, client) {
         });
 
         const onlyActive = !interaction.options?.getString('show_all') === "yes" ?? true;
+        const type = interaction.options?.getString('type') || 'all';
+
+        if (type === 'code') {
+            gifts = gifts.filter(gift => gift.type === 'code');
+        } else if (type === 'internet') {
+            gifts = gifts.filter(gift => gift.type === 'internet');
+        }
 
         if (onlyActive) {
             gifts = gifts.filter(gift => gift.isActive);
