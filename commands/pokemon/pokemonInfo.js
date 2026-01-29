@@ -72,6 +72,14 @@ function getLocale(lang) {
                 ats: 'ATS',
                 dfs: 'DFS',
                 spd: 'SPD'
+            },
+            experience_curve: {
+                fast: 'Fast',
+                medium_fast: 'Medium Fast',
+                medium_slow: 'Medium Slow',
+                slow: 'Slow',
+                fluctuating: 'Fluctuating',
+                erratic: 'Erratic'
             }
         },
         fr: {
@@ -79,7 +87,7 @@ function getLocale(lang) {
             weight: 'Poids',
             baseStats: 'Statistiques de base',
             types: 'Type',
-            abilities: 'Capacités',
+            abilities: 'Talents',
             experience: 'Expérience',
             encounter: 'Rencontre',
             breeding: 'Reproduction',
@@ -106,6 +114,14 @@ function getLocale(lang) {
                 ats: 'ATS',
                 dfs: 'DFS',
                 spd: 'VIT'
+            },
+            experience_curve: {
+                fast: 'Rapide',
+                medium_fast: 'Moyenne-Rapide',
+                medium_slow: 'Moyenne-Lente',
+                slow: 'Lente',
+                fluctuating: 'Fluctuante',
+                erratic: 'Erratique'
             }
         },
         es: {
@@ -140,6 +156,14 @@ function getLocale(lang) {
                 ats: 'ATAE',
                 dfs: 'DEFE',
                 spd: 'VEL'
+            },
+            experience_curve: {
+                fast: 'Rápida',
+                medium_fast: 'Media-Rápida',
+                medium_slow: 'Media-Lenta',
+                slow: 'Lenta',
+                fluctuating: 'Fluctuante',
+                erratic: 'Errática'
             }
         }
     };
@@ -153,7 +177,7 @@ function getLocale(lang) {
  */
 async function pokemonInfo(interaction) {
     const name = interaction.options.getString('name')?.toLowerCase();
-    const lang = interaction.options.getString('lang') || 'en';
+    const lang = interaction.options.getString('lang') || interaction.locale;
     const t = getLocale(lang);
 
     if (!name) {
@@ -279,7 +303,7 @@ async function pokemonInfo(interaction) {
             new TextDisplayBuilder({
                 content: `**${t.experience}:**\n` +
                     `${t.evGiven}: **${evGivenText}**\n` +
-                    `${t.expCurve}: **${mainForm.experienceType ?? '-'}**\n` +
+                    `${t.expCurve}: **${t.experience_curve[mainForm.experienceType] || '?'}**\n` +
                     `${t.baseExp}: **${mainForm.baseExperience ?? '?'}** | ${t.baseLoyalty}: **${mainForm.baseLoyalty ?? '?'}**`
             })
         );
@@ -305,19 +329,20 @@ async function pokemonInfo(interaction) {
         );
 
         // Breeding Section
-        container.addSeparatorComponents(new SeparatorBuilder());
-        const breedingGroupsText = mainForm.breedGroups && mainForm.breedGroups.length > 0
-            ? mainForm.breedGroups.filter((v, i, a) => a.indexOf(v) === i).join(', ')
-            : '-';
-
-        container.addTextDisplayComponents(
-            new TextDisplayBuilder({
-                content: `**${t.breeding}:**\n` +
-                    `${t.baby}: **${mainForm.babyDbSymbol ?? '-'}**\n` +
-                    `${t.breedingGroups}: **${breedingGroupsText}**\n` +
-                    `${t.eggSteps}: **${mainForm.hatchSteps ?? '?'}**`
-            })
-        );
+        if (mainForm.babyDbSymbol !== '__undef__') {
+            container.addSeparatorComponents(new SeparatorBuilder());
+            const breedingGroupsText = mainForm.breedGroups && mainForm.breedGroups.length > 0
+                ? mainForm.breedGroups.filter((v, i, a) => a.indexOf(v) === i).join(', ')
+                : '-';
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder({
+                    content: `**${t.breeding}:**\n` +
+                        `${t.baby}: **${mainForm.babyDbSymbol ?? '-'}**\n` +
+                        `${t.breedingGroups}: **${breedingGroupsText}**\n` +
+                        `${t.eggSteps}: **${mainForm.hatchSteps ?? '?'}**`
+                })
+            );
+        }
 
         await interaction.editReply({
             flags: MessageFlags.IsComponentsV2,

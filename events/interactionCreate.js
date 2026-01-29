@@ -4,6 +4,7 @@ const {commandsList} = require('../commands/commandsList');
 const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
 const {playersList} = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
+const {moveInfo} = require("../commands/move/moveInfo");
 const {handleGiftShow} = require("../interactions/giftShow");
 const {handleAbilityShow} = require("../interactions/abilityShow");
 const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
@@ -30,6 +31,8 @@ module.exports = {
                     embed = await playersList(interaction, client);
                 } else if (interaction.commandName === 'pokemon') {
                     await pokemonInfo(interaction, client);
+                } else if (interaction.commandName === 'move') {
+                    await moveInfo(interaction, client);
                 }
                 if (embed) await interaction.reply({ embeds: [embed] });
             }

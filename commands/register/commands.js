@@ -56,34 +56,34 @@ const onlineServerApiCommands = [
         })
         .addStringOption(option =>
             option
-            .setName('type')
-            .setNameLocalizations({
-                French: 'type',
-                SpanishES: 'tipo',
-            })
-            .setDescription('Type of gifts to display')
-            .setDescriptionLocalizations({
-                French: 'Type de cadeaux à afficher',
-                SpanishES: 'Tipo de regalos a mostrar',
-            })
-            .addChoices(
-                {
-                    name: 'All',
-                    nameLocalizations: {French: 'Tous', SpanishES: 'Todos'},
-                    value: 'all',
-                },
-                {
-                    name: 'Code',
-                    nameLocalizations: {French: 'Code', SpanishES: 'Código'},
-                    value: 'code',
-                },
-                {
-                    name: 'Internet',
-                    nameLocalizations: {French: 'Internet', SpanishES: 'Internet'},
-                    value: 'internet',
-                }
-            )
-            .setRequired(false)
+                .setName('type')
+                .setNameLocalizations({
+                    French: 'type',
+                    SpanishES: 'tipo',
+                })
+                .setDescription('Type of gifts to display')
+                .setDescriptionLocalizations({
+                    French: 'Type de cadeaux à afficher',
+                    SpanishES: 'Tipo de regalos a mostrar',
+                })
+                .addChoices(
+                    {
+                        name: 'All',
+                        nameLocalizations: {French: 'Tous', SpanishES: 'Todos'},
+                        value: 'all',
+                    },
+                    {
+                        name: 'Code',
+                        nameLocalizations: {French: 'Code', SpanishES: 'Código'},
+                        value: 'code',
+                    },
+                    {
+                        name: 'Internet',
+                        nameLocalizations: {French: 'Internet', SpanishES: 'Internet'},
+                        value: 'internet',
+                    }
+                )
+                .setRequired(false)
         )
         .addStringOption(option =>
             option
@@ -147,6 +147,43 @@ const dataApiCommands = [
                 .setRequired(false)
                 .addChoices(
                     {name: 'Français', value: 'fr'},
+                    {name: 'Anglais', value: 'en'},
+                    {name: 'Español', value: 'es'},
+                )
+        ),
+
+    new SlashCommandBuilder()
+        .setName("move")
+        .setNameLocalizations({
+            French: 'capacité',
+            SpanishES: 'movimiento',
+        })
+        .setDescription("Display Move information.")
+        .setDescriptionLocalizations({
+            French: 'Affiche les informations sur une capacité.',
+            SpanishES: 'Muestra la información de un movimiento.',
+        })
+        .addStringOption(option =>
+            option
+                .setName('name')
+                .setDescription('Move name')
+                .setDescriptionLocalizations({
+                    French: 'Nom de la capacité',
+                    SpanishES: 'Nombre del movimiento',
+                })
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+                .setName('lang')
+                .setDescription('Language of the information')
+                .setDescriptionLocalizations({
+                    French: 'Langue des informations',
+                    SpanishES: 'Idioma de la información',
+                })
+                .setRequired(false)
+                .addChoices(
+            {name: 'Français', value: 'fr'},
                     {name: 'Anglais', value: 'en'},
                     {name: 'Español', value: 'es'},
                 )
