@@ -183,7 +183,7 @@ const dataApiCommands = [
                 })
                 .setRequired(false)
                 .addChoices(
-            {name: 'Français', value: 'fr'},
+                    {name: 'Français', value: 'fr'},
                     {name: 'Anglais', value: 'en'},
                     {name: 'Español', value: 'es'},
                 )

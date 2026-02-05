@@ -251,7 +251,7 @@ async function pokemonInfo(interaction) {
             );
         }
 
-        if (mainForm.type2.symbol) {
+        if (mainForm.type2?.symbol) {
             typeRow.addComponents(
                 new ButtonBuilder()
                     .setLabel(formatName(mainForm.type2.name))
@@ -268,15 +268,15 @@ async function pokemonInfo(interaction) {
         );
         container.addActionRowComponents(typeRow);
 
-        if (mainForm.abilities !== [] ){
+        if (mainForm.abilities && mainForm.abilities.length > 0) {
             container.addSeparatorComponents(new SeparatorBuilder());
             const abilitiesRows = new ActionRowBuilder();
-            mainForm.abilities.forEach(ability => {
+            mainForm.abilities.forEach((ability, index) => {
                 abilitiesRows.addComponents(
                     new ButtonBuilder()
                         .setLabel(formatName(ability.name))
                         .setStyle(ButtonStyle.Secondary)
-                        .setCustomId(`ability&${ability.symbol}&${lang}`)
+                        .setCustomId(`ability&${ability.symbol}&${lang}&${index}`)
                 );
             });
             container.addTextDisplayComponents(
