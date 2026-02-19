@@ -9,9 +9,9 @@ const {logInteraction} = require('../tools/log');
 const {baseUrlDataApi} = require('../tools/settings');
 
 async function handleAbilityShow(interaction) {
-    const parts = interaction.customId.split('&');
-    const abilityId = parts[1];
-    const lang = interaction.options.getString('lang') || interaction.locale || 'en';
+    const abilityId = interaction.customId.split('&')[0].replace('ability_', '');
+    console.log(interaction.locale)
+    const lang = interaction.locale || 'en';
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {
