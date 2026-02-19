@@ -7,6 +7,7 @@ const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
 const {moveInfo} = require("../commands/move/moveInfo");
 const {handleGiftShow} = require("../interactions/giftShow");
 const {handleAbilityShow} = require("../interactions/abilityShow");
+const {handleTypeShow} = require("../interactions/typeShow");
 const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
 
 module.exports = {
@@ -42,6 +43,8 @@ module.exports = {
                     await handleGiftShow(interaction);
                 } else if (interaction.customId.startsWith('ability&')) {
                     await handleAbilityShow(interaction);
+                } else if (interaction.customId.startsWith('type_')) {
+                    await handleTypeShow(interaction);
                 }
             }
 

@@ -199,7 +199,6 @@ async function pokemonInfo(interaction) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const pokemonData = await response.json();
-        console.log(pokemonData)
         const mainForm = pokemonData.main_form;
 
         if (!mainForm) {
