@@ -188,6 +188,43 @@ const dataApiCommands = [
                     {name: 'Español', value: 'es'},
                 )
         ),
+
+    new SlashCommandBuilder()
+        .setName("type")
+        .setNameLocalizations({
+            French: 'type',
+            SpanishES: 'tipo',
+        })
+        .setDescription("Display Type information.")
+        .setDescriptionLocalizations({
+            French: 'Affiche les informations sur un type.',
+            SpanishES: 'Muestra la información de un tipo.',
+        })
+        .addStringOption(option =>
+            option
+                .setName('name')
+                .setDescription('Type name')
+                .setDescriptionLocalizations({
+                    French: 'Nom du type',
+                    SpanishES: 'Nombre del tipo',
+                })
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+                .setName('lang')
+                .setDescription('Language of the information')
+                .setDescriptionLocalizations({
+                    French: 'Langue des informations',
+                    SpanishES: 'Idioma de la información',
+                })
+                .setRequired(false)
+                .addChoices(
+                    {name: 'Français', value: 'fr'},
+                    {name: 'Anglais', value: 'en'},
+                    {name: 'Español', value: 'es'},
+                )
+        ),
 ];
 
 if (baseUrlOnlineServerAPI) {

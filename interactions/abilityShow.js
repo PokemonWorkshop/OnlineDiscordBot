@@ -11,7 +11,7 @@ const {baseUrlDataApi} = require('../tools/settings');
 async function handleAbilityShow(interaction) {
     const parts = interaction.customId.split('&');
     const abilityId = parts[1];
-    const lang = parts[2] || interaction.locale || 'en';
+    const lang = interaction.options.getString('lang') || interaction.locale || 'en';
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {

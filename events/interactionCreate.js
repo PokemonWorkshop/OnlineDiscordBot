@@ -5,6 +5,7 @@ const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
 const {playersList} = require('../commands/playersList');
 const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
 const {moveInfo} = require("../commands/move/moveInfo");
+const {typeInfo} = require("../commands/type/typeInfo");
 const {handleGiftShow} = require("../interactions/giftShow");
 const {handleAbilityShow} = require("../interactions/abilityShow");
 const {handleTypeShow} = require("../interactions/typeShow");
@@ -34,6 +35,8 @@ module.exports = {
                     await pokemonInfo(interaction, client);
                 } else if (interaction.commandName === 'move') {
                     await moveInfo(interaction, client);
+                } else if (interaction.commandName === 'type') {
+                    await typeInfo(interaction);
                 }
                 if (embed) await interaction.reply({ embeds: [embed] });
             }
