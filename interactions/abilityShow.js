@@ -15,11 +15,14 @@ async function handleAbilityShow(interaction) {
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {
-        const response = await fetch(`${baseUrlDataApi}/abilities/${abilityId}`, {
-            headers: { authorization: process.env.BEARER,
-                'Accept-Language': lang
-            },
-        });
+        const response = await fetch(
+            `${baseUrlDataApi}/abilities/${abilityId}?lang=${encodeURIComponent(lang.toString())}`,
+            {
+                headers: {
+                    authorization: process.env.BEARER
+                }
+            }
+        );
 
         const ability = await response.json();
         if (!ability || !ability.symbol)

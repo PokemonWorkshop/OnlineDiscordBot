@@ -15,9 +15,9 @@ async function handleTypeShow(interaction) {
 
     await interaction.deferReply({ flags: MessageFlags.ephemeral});
     try {
-        const response = await fetch(`${baseUrlDataApi}/types/${typeSymbol}`, {
-            headers: { authorization: process.env.BEARER,
-                'Accept-Language': lang
+        const response = await fetch(`${baseUrlDataApi}/types/${typeSymbol}?lang=${encodeURIComponent(lang.toString())}`, {
+            headers: {
+                authorization: process.env.BEARER
             },
         });
 
