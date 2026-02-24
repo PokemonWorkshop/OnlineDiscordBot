@@ -1,4 +1,4 @@
-const { logInteraction } = require('../tools/log');
+const {logInteraction} = require('../tools/log');
 
 module.exports = {
     name: 'ready',

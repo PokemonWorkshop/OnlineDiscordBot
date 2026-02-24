@@ -1,6 +1,6 @@
-const { EmbedBuilder } = require('discord.js');
-const { logInteraction } = require('../tools/log');
-const { botName, urlFooterIcon, embedColor } = require('../tools/settings');
+const {EmbedBuilder} = require('discord.js');
+const {logInteraction} = require('../tools/log');
+const {botName, urlFooterIcon, embedColor} = require('../tools/settings');
 
 /**
  * Displays informations about the bot, including its ping, uptime, and version.
@@ -23,24 +23,24 @@ async function showABout(interaction, client) {
         .setColor(embedColor)
         .setTitle(`About ${botName}`)
         .addFields(
-            { 
-                name: 'Ping', 
+            {
+                name: 'Ping',
                 value: `${ping} ms`,
                 inline: true
             },
-            { 
-                name: 'Uptime', 
-                value: `${days}d ${hours}h ${minutes}m ${seconds}s`, 
-                inline: true 
+            {
+                name: 'Uptime',
+                value: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+                inline: true
             },
-            { 
-                name: 'Version', 
-                value: `${process.env.BOT_VERSION}`, 
-                inline: true 
+            {
+                name: 'Version',
+                value: `${process.env.BOT_VERSION}`,
+                inline: true
             }
         )
-        .setFooter({ 
-            text: botName, 
+        .setFooter({
+            text: botName,
             iconURL: urlFooterIcon
         })
         .setTimestamp();
@@ -48,4 +48,4 @@ async function showABout(interaction, client) {
     return embed;
 }
 
-module.exports = { showABout };
+module.exports = {showABout};

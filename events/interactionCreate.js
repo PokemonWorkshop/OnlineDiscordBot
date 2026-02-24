@@ -1,38 +1,66 @@
-const { EmbedBuilder } = require('discord.js');
-const { logInteraction } = require('../tools/log');
-const { showABout } = require('../commands/showAbout');
-const { commandsList } = require('../commands/commandsList');
-const { mysteryGiftsList } = require('../commands/mysteryGiftsList');
-const { playersList } = require('../commands/playersList');
+const {logInteraction} = require('../tools/log');
+const {showABout} = require('../commands/showAbout');
+const {commandsList} = require('../commands/commandsList');
+const {mysteryGiftsList} = require('../commands/mysteryGiftsList');
+const {playersList} = require('../commands/playersList');
+const {pokemonInfo} = require("../commands/pokemon/pokemonInfo");
+const {moveInfo} = require("../commands/move/moveInfo");
+const {typeInfo} = require("../commands/type/typeInfo");
+const {handleGiftShow} = require("../interactions/giftShow");
+const {handleAbilityShow} = require("../interactions/abilityShow");
+const {handleTypeShow} = require("../interactions/typeShow");
+const {ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags} = require('discord.js');
 
 module.exports = {
     name: 'interactionCreate',
-/**
- * Handles the 'interactionCreate' event for executing commands.
- * Responds to various slash commands by sending appropriate embed messages.
- * @param {object} interaction - The interaction object from Discord.js, used to determine the command and respond.
- * @param {object} client - The Discord client object.
- */
+    /**
+     * Handles the 'interactionCreate' event for executing commands.
+     * Responds to various slash commands by sending appropriate embed messages.
+     * @param {object} interaction - The interaction object from Discord.js, used to determine the command and respond.
+     * @param {object} client - The Discord client object.
+     */
     async execute(interaction, client) {
-        if (interaction.isCommand()) {
-            try {
+        try {
+            if (interaction.isCommand()) {
+                let embed = null;
                 if (interaction.commandName === 'about') {
-                    const embed = await showABout(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await showABout(interaction, client);
                 } else if (interaction.commandName === 'commands') {
-                    const embed = await commandsList(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await commandsList(interaction, client);
                 } else if (interaction.commandName === 'gifts') {
-                    const embed = await mysteryGiftsList(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    await mysteryGiftsList(interaction, client); // déjà gère la liste
                 } else if (interaction.commandName === 'players') {
-                    const embed = await playersList(interaction, client);
-                    await interaction.reply({ embeds: [embed] });
+                    embed = await playersList(interaction, client);
+                } else if (interaction.commandName === 'pokemon') {
+                    await pokemonInfo(interaction, client);
+                } else if (interaction.commandName === 'move') {
+                    await moveInfo(interaction, client);
+                } else if (interaction.commandName === 'type') {
+                    await typeInfo(interaction);
                 }
-            } catch (error) {
-                logInteraction(`Error while running ${interaction.commandName} : `, error);
-                await interaction.reply("Désolé, une erreur s'est produite lors de l'exécution de la commande.");
+                if (embed) await interaction.reply({ embeds: [embed] });
             }
-        } 
+
+            else if (interaction.isButton()) {
+                if (interaction.customId.startsWith('gift_show_')) {
+                    await handleGiftShow(interaction);
+                } else if (interaction.customId.startsWith('ability_')) {
+                    await handleAbilityShow(interaction);
+                } else if (interaction.customId.startsWith('type_')) {
+                    await handleTypeShow(interaction);
+                }
+            }
+
+        } catch (error) {
+            console.error('Error while handling interaction:', error);
+            logInteraction('Error in interactionCreate:', error);
+            if (!interaction.replied) {
+                await interaction.reply({
+                    content: "Désolé, une erreur s'est produite lors de l'exécution de l'interaction.",
+                    flags: MessageFlags.ephemeral,
+                });
+            }
+        }
     }
+
 };

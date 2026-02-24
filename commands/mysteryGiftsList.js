@@ -1,64 +1,106 @@
 const axios = require('axios');
-const { EmbedBuilder } = require('discord.js');
-const { formatDate } = require('../tools/date');
-const { logInteraction } = require('../tools/log');
-const { botName, urlFooterIcon, embedColor, errorEmbedColor, baseUrlApi } = require('../tools/settings');
+const {
+    MessageFlags,
+    ContainerBuilder,
+    SectionBuilder,
+    TextDisplayBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Colors
+} = require('discord.js');
+const {formatDate} = require('../tools/date');
+const {logInteraction} = require('../tools/log');
+const {baseUrlOnlineServerAPI} = require('../tools/settings');
 
-/**
- * Fetches and displays a list of mystery gifts in Discord as an embed message.
- * @param {object} interaction - The interaction object from Discord.js, used to reply or edit messages.
- * @param {object} client - The Discord client object.
- */
 async function mysteryGiftsList(interaction, client) {
     logInteraction('Mystery gifts command', interaction, client, true);
+    await interaction.deferReply({flags: MessageFlags.ephemeral});
 
     try {
-        const response = await axios.get(`${baseUrlApi}/gift/all`, {
-            headers: {
-                'Authorization': `Bearer ${process.env.BEARER}`
-            }
+        const response = await axios.get(`${baseUrlOnlineServerAPI}/gift`, {
+            headers: {authorization: process.env.BEARER}
         });
-        if (response.data.success) {
-            const gifts = response.data.data;
 
-            const giftList = gifts.map((gift) => {
-                const isActive = new Date() >= new Date(gift.availability.startDate) && new Date() <= new Date(gift.availability.endDate);
-            
-                const startDate = formatDate(gift.availability.startDate);
-                const endDate = formatDate(gift.availability.endDate);
-                const code = gift.redeemCode || '*retrievable in game*';
-            
-                return `**${gift.title}** \n` + 
-                       `${isActive ? '🟢 Available' : '🔴 Not available'}\n` +
-                       `➡️ **Code** : ${code}\n` +
-                       `📅 **From** : ${startDate} to ${endDate}`;
+        if (!response.data.success) throw new Error('API response indicates failure');
 
-            }).join('\n\n');
+        let gifts = response.data.gifts || [];
 
-            const embed = new EmbedBuilder()
-                .setColor(embedColor)
-                .setTitle('List of mystery gifts')
-                .setDescription(giftList || 'No mystery gift available for now.')
-                .setFooter({ 
-                    text: botName, 
-                    iconURL: urlFooterIcon
-                })
-                .setTimestamp();
+        const now = new Date();
+        gifts = gifts.map(gift => {
+            const hasDates = gift.validFrom && gift.validTo;
+            const isActive =
+                (hasDates && now >= new Date(gift.validFrom) && now <= new Date(gift.validTo)) ||
+                gift.alwaysAvailable;
+            return {...gift, isActive, hasDates};
+        });
 
-            return embed;
-        } else {
-            throw new Error('API response indicates failure');
+        const onlyActive = !interaction.options?.getString('show_all') === "yes" ?? true;
+        const type = interaction.options?.getString('type') || 'all';
+
+        if (type === 'code') {
+            gifts = gifts.filter(gift => gift.type === 'code');
+        } else if (type === 'internet') {
+            gifts = gifts.filter(gift => gift.type === 'internet');
         }
+
+        if (onlyActive) {
+            gifts = gifts.filter(gift => gift.isActive);
+        }
+
+        gifts.sort((a, b) => {
+            if (a.isActive && b.isActive) {
+                if (a.validTo && b.validTo) return new Date(a.validTo) - new Date(b.validTo);
+                return 0;
+            }
+            if (!a.isActive && !b.isActive) {
+                if (a.validTo && b.validTo) return new Date(b.validTo) - new Date(a.validTo);
+                return 0;
+            }
+            return a.isActive ? -1 : 1;
+        });
+
+        gifts = gifts.slice(0, 5);
+
+        if (gifts.length === 0)
+            return interaction.editReply({content: '🎁 Aucun Mystery Gift disponible pour le moment.'});
+
+        const containers = gifts.map((gift) => {
+            const color = gift.isActive ? Colors.Green : Colors.Red;
+            const dateInfo = gift.hasDates
+                ? `📅 ${formatDate(gift.validFrom)} → ${formatDate(gift.validTo)}`
+                : '📅 Permanente';
+
+            const container = new ContainerBuilder()
+                .setAccentColor(color);
+
+            const section = new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder({content: `🎁 **${gift.title}**`}),
+                    new TextDisplayBuilder({content: `➡️ Code : **${gift.code || '*À récupérer dans le jeu*'}**`}),
+                    new TextDisplayBuilder({content: dateInfo})
+                )
+                .setButtonAccessory(
+                    new ButtonBuilder()
+                        .setLabel('🎒 Voir le contenu')
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId(`gift_show_${gift.id}`)
+                );
+
+            container.addSectionComponents(section);
+            return container;
+        });
+
+        await interaction.editReply({
+            flags: MessageFlags.IsComponentsV2,
+            components: containers,
+        });
+
     } catch (error) {
-        console.error('Error while fetching gifts :', error);
-
-        const errorEmbed = new EmbedBuilder()
-            .setColor(errorEmbedColor)
-            .setTitle('Error')
-            .setDescription('Unable to retrieve the list of mystery gifts. Please try again later.');
-
-        return errorEmbed;
+        console.error('Error while fetching gifts:', error);
+        await interaction.editReply({
+            content: '❌ Impossible de récupérer la liste des Mystery Gifts pour le moment.'
+        });
     }
-}  
+}
 
-module.exports = { mysteryGiftsList };
+module.exports = {mysteryGiftsList};
